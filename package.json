@@ -6,8 +6,7 @@
     "dst"
   ],
   "main": "./dst/index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HoseungJang/typebv.git"
@@ -23,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/HoseungJang/typebv/issues"
   },
-  "homepage": "https://github.com/HoseungJang/typebv#readme"
+  "homepage": "https://github.com/HoseungJang/typebv#readme",
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  }
 }
