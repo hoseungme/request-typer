@@ -1,3 +1,3 @@
-# typebv
+# oas-builder
 
-A simple type builder and validator for Typescript
+An OpenAPI Specification Builder For Typescript

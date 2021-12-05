@@ -1,7 +1,7 @@
 {
-  "name": "typebv",
+  "name": "oas-builder",
   "version": "0.0.0",
-  "description": "A simple type builder and validator for Typescript",
+  "description": "An OpenAPI Specification Builder For Typescript",
   "files": [
     "dst"
   ],
@@ -9,20 +9,21 @@
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HoseungJang/typebv.git"
+    "url": "git+https://github.com/HoseungJang/oas-builder.git"
   },
   "keywords": [
-    "type",
-    "builder",
-    "validator",
-    "typebv"
+    "oas",
+    "oas-builder",
+    "openapi",
+    "open api",
+    "json schema"
   ],
   "author": "Alvin Jang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/HoseungJang/typebv/issues"
+    "url": "https://github.com/HoseungJang/oas-builder/issues"
   },
-  "homepage": "https://github.com/HoseungJang/typebv#readme",
+  "homepage": "https://github.com/HoseungJang/oas-builder#readme",
   "devDependencies": {
     "typescript": "^4.5.2"
   }
