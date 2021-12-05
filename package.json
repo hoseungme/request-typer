@@ -6,7 +6,9 @@
     "dst"
   ],
   "main": "./dst/index.js",
-  "scripts": {},
+  "scripts": {
+    "build": "rm -rf dst && tsc"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HoseungJang/oas-builder.git"
