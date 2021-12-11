@@ -66,4 +66,8 @@ class Schema {
     type.options.optional = true;
     return type as OptionalType<T>;
   }
+
+  public Union<T extends AllType>(types: T[]): UnionType<T> {
+    return { type: "union", itemTypes: types, options: {} };
+  }
 }
