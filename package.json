@@ -8,7 +8,8 @@
   "main": "./dst/index.js",
   "scripts": {
     "build": "rm -rf dst && tsc",
-    "format": "prettier --write 'src/**/*.ts' --print-width=120"
+    "format": "prettier --write 'src/**/*.ts' --print-width=120",
+    "test": "mocha --require ts-node/register --exit -t 5000 src/__test__/*.test.ts"
   },
   "repository": {
     "type": "git",
