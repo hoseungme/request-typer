@@ -71,3 +71,5 @@ class Schema {
     return { type: "union", itemTypes: types, options: {} };
   }
 }
+
+export const S = new Schema();
