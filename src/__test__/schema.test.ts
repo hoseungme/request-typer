@@ -31,6 +31,14 @@ describe("Schema", () => {
     });
   });
 
+  describe("Schema.Enum", () => {
+    it("should return EnumType object", () => {
+      const schema = S.Enum(["a", "b", "c"]);
+      expect(schema.type).to.be.eq("enum");
+      expect(schema.values).to.be.deep.eq(["a", "b", "c"]);
+    });
+  });
+
   describe("Schema.Array", () => {
     context("when NumberType is passed", () => {
       it("should return ArrayType<NumberType> object", () => {

@@ -22,6 +22,12 @@ type NullType = {
   options: TypeOptions;
 };
 
+type EnumType = {
+  type: "enum";
+  values: string[];
+  options: TypeOptions;
+};
+
 type ArrayType<T extends AllType> = {
   type: "array";
   itemType: T;
@@ -49,6 +55,7 @@ export type AllType =
   | BooleanType
   | StringType
   | NullType
+  | EnumType
   | ArrayType<any>
   | ObjectType<any>
   | UnionType<any>;
@@ -68,6 +75,10 @@ class Schema {
 
   public Null(): NullType {
     return { type: "null", options: {} };
+  }
+
+  public Enum(values: string[]): EnumType {
+    return { type: "enum", values, options: {} };
   }
 
   public Array<T extends AllType>(itemType: T): ArrayType<T> {
