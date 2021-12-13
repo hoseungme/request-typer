@@ -17,6 +17,11 @@ type StringType = {
   options: TypeOptions;
 };
 
+type NullType = {
+  type: "null";
+  options: TypeOptions;
+};
+
 type ArrayType<T extends AllType> = {
   type: "array";
   itemType: T;
@@ -39,7 +44,14 @@ type ObjectType<T extends ObjectProperties> = {
 
 type OptionalType<T extends AllType> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
 
-type AllType = NumberType | BooleanType | StringType | ArrayType<any> | ObjectType<any> | UnionType<any>;
+export type AllType =
+  | NumberType
+  | BooleanType
+  | StringType
+  | NullType
+  | ArrayType<any>
+  | ObjectType<any>
+  | UnionType<any>;
 
 class Schema {
   public Number(): NumberType {
@@ -52,6 +64,10 @@ class Schema {
 
   public String(): StringType {
     return { type: "string", options: {} };
+  }
+
+  public Null(): NullType {
+    return { type: "null", options: {} };
   }
 
   public Array<T extends AllType>(itemType: T): ArrayType<T> {

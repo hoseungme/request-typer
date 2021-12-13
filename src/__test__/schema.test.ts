@@ -24,6 +24,13 @@ describe("Schema", () => {
     });
   });
 
+  describe("Schema.Null", () => {
+    it("should return NullType object", () => {
+      const schema = S.Null();
+      expect(schema.type).to.be.eq("null");
+    });
+  });
+
   describe("Schema.Array", () => {
     context("when NumberType is passed", () => {
       it("should return ArrayType<NumberType> object", () => {
