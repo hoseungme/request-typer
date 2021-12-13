@@ -1,39 +1,39 @@
 import { expect } from "chai";
 
-import { S } from "../schema";
+import { Schema } from "../schema";
 
 describe("Schema", () => {
   describe("Schema.Number", () => {
     it("should return NumberType object", () => {
-      const schema = S.Number();
+      const schema = Schema.Number();
       expect(schema.type).to.be.eq("number");
     });
   });
 
   describe("Schema.String", () => {
     it("should return StringType object", () => {
-      const schema = S.String();
+      const schema = Schema.String();
       expect(schema.type).to.be.eq("string");
     });
   });
 
   describe("Schema.Boolean", () => {
     it("should return BooleanType object", () => {
-      const schema = S.Boolean();
+      const schema = Schema.Boolean();
       expect(schema.type).to.be.eq("boolean");
     });
   });
 
   describe("Schema.Null", () => {
     it("should return NullType object", () => {
-      const schema = S.Null();
+      const schema = Schema.Null();
       expect(schema.type).to.be.eq("null");
     });
   });
 
   describe("Schema.Enum", () => {
     it("should return EnumType object", () => {
-      const schema = S.Enum(["a", "b", "c"]);
+      const schema = Schema.Enum(["a", "b", "c"]);
       expect(schema.type).to.be.eq("enum");
       expect(schema.values).to.be.deep.eq(["a", "b", "c"]);
     });
@@ -42,7 +42,7 @@ describe("Schema", () => {
   describe("Schema.Array", () => {
     context("when NumberType is passed", () => {
       it("should return ArrayType<NumberType> object", () => {
-        const schema = S.Array(S.Number());
+        const schema = Schema.Array(Schema.Number());
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("number");
       });
@@ -50,7 +50,7 @@ describe("Schema", () => {
 
     context("when StringType is passed", () => {
       it("should return ArrayType<StringType> object", () => {
-        const schema = S.Array(S.String());
+        const schema = Schema.Array(Schema.String());
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("string");
       });
@@ -58,7 +58,7 @@ describe("Schema", () => {
 
     context("when BooleanType is passed", () => {
       it("should return ArrayType<BooleanType> object", () => {
-        const schema = S.Array(S.Boolean());
+        const schema = Schema.Array(Schema.Boolean());
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("boolean");
       });
@@ -66,7 +66,7 @@ describe("Schema", () => {
 
     context("when ObjectType is passed", () => {
       it("should return ArrayType<ObjectType> object", () => {
-        const schema = S.Array(S.Object({}));
+        const schema = Schema.Array(Schema.Object({}));
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("object");
       });
@@ -74,7 +74,7 @@ describe("Schema", () => {
 
     context("when UnionType is passed", () => {
       it("should return ArrayType<UnionType> object", () => {
-        const schema = S.Array(S.Union([]));
+        const schema = Schema.Array(Schema.Union([]));
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("union");
       });
@@ -83,14 +83,14 @@ describe("Schema", () => {
 
   describe("Schema.Object", () => {
     it("should return ObjectType object", () => {
-      const schema = S.Object({
-        number: S.Number(),
-        string: S.String(),
-        boolean: S.Boolean(),
-        array: S.Array(S.Number()),
-        object: S.Object({}),
-        union: S.Union([]),
-        optional: S.Optional(S.Number()),
+      const schema = Schema.Object({
+        number: Schema.Number(),
+        string: Schema.String(),
+        boolean: Schema.Boolean(),
+        array: Schema.Array(Schema.Number()),
+        object: Schema.Object({}),
+        union: Schema.Union([]),
+        optional: Schema.Optional(Schema.Number()),
       });
 
       expect(schema.type).to.be.eq("object");
@@ -106,7 +106,7 @@ describe("Schema", () => {
 
   describe("Schema.Optional", () => {
     it("should set Type.optional option to true", () => {
-      const schema = S.Optional(S.Number());
+      const schema = Schema.Optional(Schema.Number());
       expect(schema.type).to.be.eq("number");
       expect(schema.options.optional).to.be.true;
     });
@@ -114,7 +114,14 @@ describe("Schema", () => {
 
   describe("Schema.Union", () => {
     it("should return UnionType object", () => {
-      const schema = S.Union([S.Number(), S.String(), S.Boolean(), S.Array(S.Number()), S.Object({}), S.Union([])]);
+      const schema = Schema.Union([
+        Schema.Number(),
+        Schema.String(),
+        Schema.Boolean(),
+        Schema.Array(Schema.Number()),
+        Schema.Object({}),
+        Schema.Union([]),
+      ]);
       expect(schema.type).to.be.eq("union");
       expect(schema.itemTypes.map(({ type }) => type)).to.be.deep.eq([
         "number",

@@ -60,43 +60,41 @@ export type AllType =
   | ObjectType<any>
   | UnionType<any>;
 
-class Schema {
-  public Number(): NumberType {
+export class Schema {
+  public static Number(): NumberType {
     return { type: "number", options: {} };
   }
 
-  public Boolean(): BooleanType {
+  public static Boolean(): BooleanType {
     return { type: "boolean", options: {} };
   }
 
-  public String(): StringType {
+  public static String(): StringType {
     return { type: "string", options: {} };
   }
 
-  public Null(): NullType {
+  public static Null(): NullType {
     return { type: "null", options: {} };
   }
 
-  public Enum(values: string[]): EnumType {
+  public static Enum(values: string[]): EnumType {
     return { type: "enum", values, options: {} };
   }
 
-  public Array<T extends AllType>(itemType: T): ArrayType<T> {
+  public static Array<T extends AllType>(itemType: T): ArrayType<T> {
     return { type: "array", itemType, options: {} };
   }
 
-  public Object<T extends ObjectProperties>(properties: T): ObjectType<T> {
+  public static Object<T extends ObjectProperties>(properties: T): ObjectType<T> {
     return { type: "object", properties, options: {} };
   }
 
-  public Optional<T extends AllType>(type: T): OptionalType<T> {
+  public static Optional<T extends AllType>(type: T): OptionalType<T> {
     type.options.optional = true;
     return type as OptionalType<T>;
   }
 
-  public Union<T extends AllType>(types: T[]): UnionType<T> {
+  public static Union<T extends AllType>(types: T[]): UnionType<T> {
     return { type: "union", itemTypes: types, options: {} };
   }
 }
-
-export const S = new Schema();
