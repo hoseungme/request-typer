@@ -1,3 +1,3 @@
-# oas-builder
+# request-typer
 
-An OpenAPI Specification Builder For Typescript
+make typed request schema and build OpenAPI Specification

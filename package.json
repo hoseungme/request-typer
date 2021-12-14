@@ -1,7 +1,7 @@
 {
-  "name": "oas-builder",
+  "name": "request-typer",
   "version": "0.0.0",
-  "description": "An OpenAPI Specification Builder For Typescript",
+  "description": "make typed request schema and build OpenAPI Specification",
   "files": [
     "dst"
   ],
@@ -13,21 +13,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HoseungJang/oas-builder.git"
+    "url": "git+https://github.com/HoseungJang/request-typer.git"
   },
   "keywords": [
     "oas",
     "oas-builder",
     "openapi",
     "open api",
-    "json schema"
+    "json schema",
+    "typed",
+    "typed-library"
   ],
   "author": "Alvin Jang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/HoseungJang/oas-builder/issues"
+    "url": "https://github.com/HoseungJang/request-typer/issues"
   },
-  "homepage": "https://github.com/HoseungJang/oas-builder#readme",
+  "homepage": "https://github.com/HoseungJang/request-typer#readme",
   "devDependencies": {
     "@types/chai": "^4.3.0",
     "@types/mocha": "^9.0.0",
