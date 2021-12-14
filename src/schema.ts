@@ -1,54 +1,54 @@
-type TypeOptions = {
+export type TypeOptions = {
   optional?: boolean;
 };
 
-type NumberType = {
+export type NumberType = {
   type: "number";
   options: TypeOptions;
 };
 
-type BooleanType = {
+export type BooleanType = {
   type: "boolean";
   options: TypeOptions;
 };
 
-type StringType = {
+export type StringType = {
   type: "string";
   options: TypeOptions;
 };
 
-type NullType = {
+export type NullType = {
   type: "null";
   options: TypeOptions;
 };
 
-type EnumType = {
+export type EnumType = {
   type: "enum";
   values: string[];
   options: TypeOptions;
 };
 
-type ArrayType<T extends AllType> = {
+export type ArrayType<T extends AllType> = {
   type: "array";
   itemType: T;
   options: TypeOptions;
 };
 
-type UnionType<T extends AllType> = {
+export type UnionType<T extends AllType> = {
   type: "union";
   itemTypes: T[];
   options: TypeOptions;
 };
 
-type ObjectProperties = { [key in string]: AllType };
+export type ObjectProperties = { [key in string]: AllType };
 
-type ObjectType<T extends ObjectProperties> = {
+export type ObjectType<T extends ObjectProperties> = {
   type: "object";
   properties: T;
   options: TypeOptions;
 };
 
-type OptionalType<T extends AllType> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
+export type OptionalType<T extends AllType> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
 
 export type AllType =
   | NumberType
