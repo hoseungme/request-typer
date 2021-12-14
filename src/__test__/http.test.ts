@@ -70,7 +70,7 @@ describe("HTTP", () => {
       expect(request.response.user.properties.id.type).to.be.eq("string");
     });
   });
-  
+
   describe("HTTP.PATCH", () => {
     it("should return Request object", () => {
       const request = HTTP.PATCH(
