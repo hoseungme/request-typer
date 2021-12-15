@@ -1,7 +1,6 @@
 import { expect } from "chai";
 
-import { OASBuilder } from "../OASBuilder";
-import { HTTP, Parameter, Schema } from "..";
+import { HTTP, Parameter, Schema, OASBuilder } from "..";
 
 describe("OASBuilder", () => {
   describe("OASBuilder.build", () => {
