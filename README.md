@@ -1,6 +1,10 @@
 # request-typer
+[![npm version](https://badge.fury.io/js/request-typer.svg)](https://badge.fury.io/js/request-typer)
+[![npm download](https://badgen.net/npm/dt/request-typer)](https://badgen.net/npm/dt/request-typer)
 
-make typed request schema and build OpenAPI Specification
+Make typed request schema and build OpenAPI Specification.
+
+No dependencies. Only pure Javascript.
 
 ## Features
 - [Schema](#schema)
@@ -67,8 +71,6 @@ HTTP.GET(
 
 ## OASBuilder
 use ```OASBuilder``` to create OpenAPI Specification from [HTTP request schemas](#http).
-
-constructor of ```OASBuilder``` got 3 arguments.
 
 ```typescript
 const Responses = {
