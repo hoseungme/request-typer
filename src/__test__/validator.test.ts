@@ -42,18 +42,6 @@ describe("Validator", () => {
       });
     });
 
-    context("when NullType is passed", () => {
-      const schema = Schema.Null();
-
-      it("should return true if value is evaluated as null", () => {
-        expect(Validator.validate(schema, null)).to.be.true;
-      });
-
-      it("should return false if value isn't evaluated as null", () => {
-        expect(Validator.validate(schema, "1234")).to.be.false;
-      });
-    });
-
     context("when EnumType is passed", () => {
       const schema = Schema.Enum(["a", "b", "c"]);
 

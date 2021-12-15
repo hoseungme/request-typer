@@ -24,13 +24,6 @@ describe("Schema", () => {
     });
   });
 
-  describe("Schema.Null", () => {
-    it("should return NullType object", () => {
-      const schema = Schema.Null();
-      expect(schema.type).to.be.eq("null");
-    });
-  });
-
   describe("Schema.Enum", () => {
     it("should return EnumType object", () => {
       const schema = Schema.Enum(["a", "b", "c"]);
@@ -109,6 +102,14 @@ describe("Schema", () => {
       const schema = Schema.Optional(Schema.Number());
       expect(schema.type).to.be.eq("number");
       expect(schema.options.optional).to.be.true;
+    });
+  });
+
+  describe("Schema.Nullable", () => {
+    it("should set Type.nullable option to true", () => {
+      const schema = Schema.Nullable(Schema.Number());
+      expect(schema.type).to.be.eq("number");
+      expect(schema.options.nullable).to.be.true;
     });
   });
 

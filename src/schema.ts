@@ -1,5 +1,6 @@
 export type TypeOptions = {
   optional?: boolean;
+  nullable?: boolean;
 };
 
 export type NumberType = {
@@ -14,11 +15,6 @@ export type BooleanType = {
 
 export type StringType = {
   type: "string";
-  options: TypeOptions;
-};
-
-export type NullType = {
-  type: "null";
   options: TypeOptions;
 };
 
@@ -50,11 +46,12 @@ export type ObjectType<T extends ObjectProperties> = {
 
 export type OptionalType<T extends AllType> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
 
+export type NullableType<T extends AllType> = Omit<T, "options"> & { options: T["options"] & { nullable: true } };
+
 export type AllType =
   | NumberType
   | BooleanType
   | StringType
-  | NullType
   | EnumType
   | ArrayType<any>
   | ObjectType<any>
@@ -73,10 +70,6 @@ export class Schema {
     return { type: "string", options: {} };
   }
 
-  public static Null(): NullType {
-    return { type: "null", options: {} };
-  }
-
   public static Enum(values: string[]): EnumType {
     return { type: "enum", values, options: {} };
   }
@@ -92,6 +85,11 @@ export class Schema {
   public static Optional<T extends AllType>(type: T): OptionalType<T> {
     type.options.optional = true;
     return type as OptionalType<T>;
+  }
+
+  public static Nullable<T extends AllType>(type: T): NullableType<T> {
+    type.options.nullable = true;
+    return type as NullableType<T>;
   }
 
   public static Union<T extends AllType>(types: T[]): UnionType<T> {

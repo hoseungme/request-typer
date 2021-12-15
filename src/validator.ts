@@ -16,9 +16,6 @@ export class Validator {
       case "boolean": {
         return typeof value === "boolean";
       }
-      case "null": {
-        return value === null;
-      }
       case "enum": {
         return schema.values.some((v) => v === value);
       }
