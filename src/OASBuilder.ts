@@ -54,7 +54,7 @@ export class OASBuilder {
         ? parameterKeys.map((key) => {
             const parameter = requestSchema.parameters[key];
             return {
-              required: !parameter.schema.options.optional,
+              required: parameter.type === "query" ? !parameter.schema.options.optional : true,
               name: key,
               in: parameter.type,
               schema: this.createSchema(parameter.schema),
