@@ -35,9 +35,11 @@ export type ArrayType<T extends AllType> = {
   definition: string;
 };
 
+export type TypeWithoutUnion<T extends AllType> = T extends UnionType<any> ? T["itemTypes"][number] : T;
+
 export type UnionType<T extends AllType> = {
   type: "union";
-  itemTypes: T[];
+  itemTypes: TypeWithoutUnion<T>[];
   options: TypeOptions;
   definition: string;
 };
@@ -121,11 +123,23 @@ export class Schema {
   }
 
   public static Union<T extends AllType>(types: T[]): UnionType<T> {
+    const uniquified = (() => {
+      const flattend = types
+        .map((type) => {
+          if (type.type === "union") {
+            return type.itemTypes;
+          }
+          return type;
+        })
+        .flat() as TypeWithoutUnion<T>[];
+      return Array.from(new Map(flattend.map((type) => [JSON.stringify(type.definition), type]))).map(([, type]) => type);
+    })();
+
     return {
       type: "union",
-      itemTypes: types,
+      itemTypes: uniquified,
       options: {},
-      definition: types.map((type) => type.definition).join(" | "),
+      definition: uniquified.map((type) => type.definition).join(" | "),
     };
   }
 }

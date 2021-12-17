@@ -135,21 +135,15 @@ describe("Schema", () => {
       const schema = Schema.Union([
         Schema.Number(),
         Schema.String(),
-        Schema.Boolean(),
-        Schema.Array(Schema.Number()),
-        Schema.Object({}),
-        Schema.Union([Schema.Number(), Schema.String()]),
+        Schema.Union([Schema.Number(), Schema.String(), Schema.Boolean()]),
+        Schema.Object({a: Schema.String()}),
+        Schema.Object({a: Schema.Number()}),
+        Schema.Object({a: Schema.Number()}),
+        Schema.Object({a: Schema.Boolean()})
       ]);
       expect(schema.type).to.be.eq("union");
-      expect(schema.itemTypes.map(({ type }) => type)).to.be.deep.eq([
-        "number",
-        "string",
-        "boolean",
-        "array",
-        "object",
-        "union",
-      ]);
-      expect(schema.definition).to.be.eq("number | string | boolean | Array<number> | {} | number | string")
+      expect(schema.itemTypes.map(({ type }) => type)).to.be.deep.eq(["number", "string", "boolean", "object", "object", "object"]);
+      expect(schema.definition).to.be.eq(`number | string | boolean | {\n  a: string\n} | {\n  a: number\n} | {\n  a: boolean\n}`);
     });
   });
 });
