@@ -39,7 +39,7 @@ export class OASBuilder {
   private createComponents(): OpenAPIV3.ComponentsObject {
     const schemas: NonNullable<OpenAPIV3.ComponentsObject["schemas"]> = {};
     this.responseSchemaKeyValuePairs.forEach(([key, value]) => {
-      schemas[key] = this.createSchema({ type: "object", properties: value, options: {} });
+      schemas[key] = this.createSchema({ type: "object", properties: value, options: {}, definition: "" });
     });
     return { schemas };
   }
@@ -78,6 +78,7 @@ export class OASBuilder {
                     return result;
                   })(),
                   options: {},
+                  definition: "",
                 }),
               },
             },
@@ -103,6 +104,7 @@ export class OASBuilder {
                       type: "object",
                       properties: requestSchema.response,
                       options: {},
+                      definition: "",
                     });
               })(),
             },

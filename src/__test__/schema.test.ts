@@ -29,6 +29,7 @@ describe("Schema", () => {
       const schema = Schema.Enum(["a", "b", "c"]);
       expect(schema.type).to.be.eq("enum");
       expect(schema.values).to.be.deep.eq(["a", "b", "c"]);
+      expect(schema.definition).to.be.eq(`"a" | "b" | "c"`);
     });
   });
 
@@ -38,6 +39,7 @@ describe("Schema", () => {
         const schema = Schema.Array(Schema.Number());
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("number");
+        expect(schema.definition).to.be.eq("Array<number>");
       });
     });
 
@@ -46,6 +48,7 @@ describe("Schema", () => {
         const schema = Schema.Array(Schema.String());
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("string");
+        expect(schema.definition).to.be.eq("Array<string>");
       });
     });
 
@@ -54,6 +57,7 @@ describe("Schema", () => {
         const schema = Schema.Array(Schema.Boolean());
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("boolean");
+        expect(schema.definition).to.be.eq("Array<boolean>");
       });
     });
 
@@ -62,14 +66,16 @@ describe("Schema", () => {
         const schema = Schema.Array(Schema.Object({}));
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("object");
+        expect(schema.definition).to.be.eq(`Array<{}>`);
       });
     });
 
     context("when UnionType is passed", () => {
       it("should return ArrayType<UnionType> object", () => {
-        const schema = Schema.Array(Schema.Union([]));
+        const schema = Schema.Array(Schema.Union([Schema.Number(), Schema.String()]));
         expect(schema.type).to.be.eq("array");
         expect(schema.itemType.type).to.be.eq("union");
+        expect(schema.definition).to.be.eq(`Array<number | string>`);
       });
     });
   });
@@ -82,7 +88,7 @@ describe("Schema", () => {
         boolean: Schema.Boolean(),
         array: Schema.Array(Schema.Number()),
         object: Schema.Object({}),
-        union: Schema.Union([]),
+        union: Schema.Union([Schema.Number(), Schema.String()]),
         optional: Schema.Optional(Schema.Number()),
       });
 
@@ -94,6 +100,17 @@ describe("Schema", () => {
       expect(schema.properties.object.type).to.be.eq("object");
       expect(schema.properties.union.type).to.be.eq("union");
       expect(schema.properties.optional.options.optional).to.be.true;
+      expect(schema.definition).to.be.eq(
+        `{\n${[
+          "  number: number",
+          "  string: string",
+          "  boolean: boolean",
+          "  array: Array<number>",
+          "  object: {}",
+          "  union: number | string",
+          "  optional?: number",
+        ].join(",\n")}\n}`
+      );
     });
   });
 
@@ -121,7 +138,7 @@ describe("Schema", () => {
         Schema.Boolean(),
         Schema.Array(Schema.Number()),
         Schema.Object({}),
-        Schema.Union([]),
+        Schema.Union([Schema.Number(), Schema.String()]),
       ]);
       expect(schema.type).to.be.eq("union");
       expect(schema.itemTypes.map(({ type }) => type)).to.be.deep.eq([
@@ -132,6 +149,7 @@ describe("Schema", () => {
         "object",
         "union",
       ]);
+      expect(schema.definition).to.be.eq("number | string | boolean | Array<number> | {} | number | string")
     });
   });
 });
