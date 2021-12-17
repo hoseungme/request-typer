@@ -97,16 +97,11 @@ export class Schema {
       options: {},
       definition:
         pairs.length > 0
-          ? `{\n${pairs
-              .map(
-                (pair) =>
-                  `  ${
-                    pair[1].options.optional
-                      ? `${pair[0]}?: ${pair[1].definition}`
-                      : `${pair[0]}: ${pair[1].definition}`
-                  }`
+          ? `{ ${pairs
+              .map((pair) =>
+                pair[1].options.optional ? `${pair[0]}?: ${pair[1].definition}` : `${pair[0]}: ${pair[1].definition}`
               )
-              .join(",\n")}\n}`
+              .join(", ")} }`
           : "{}",
     };
   }
@@ -132,7 +127,9 @@ export class Schema {
           return type;
         })
         .flat() as TypeWithoutUnion<T>[];
-      return Array.from(new Map(flattend.map((type) => [JSON.stringify(type.definition), type]))).map(([, type]) => type);
+      return Array.from(new Map(flattend.map((type) => [JSON.stringify(type.definition), type]))).map(
+        ([, type]) => type
+      );
     })();
 
     return {

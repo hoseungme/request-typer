@@ -88,7 +88,11 @@ describe("Schema", () => {
         boolean: Schema.Boolean(),
         array: Schema.Array(Schema.Number()),
         object: Schema.Object({}),
-        union: Schema.Union([Schema.Number(), Schema.String()]),
+        union: Schema.Union([
+          Schema.Number(),
+          Schema.String(),
+          Schema.Union([Schema.Number(), Schema.String(), Schema.Boolean()]),
+        ]),
         optional: Schema.Optional(Schema.Number()),
       });
 
@@ -101,15 +105,15 @@ describe("Schema", () => {
       expect(schema.properties.union.type).to.be.eq("union");
       expect(schema.properties.optional.options.optional).to.be.true;
       expect(schema.definition).to.be.eq(
-        `{\n${[
-          "  number: number",
-          "  string: string",
-          "  boolean: boolean",
-          "  array: Array<number>",
-          "  object: {}",
-          "  union: number | string",
-          "  optional?: number",
-        ].join(",\n")}\n}`
+        `{ ${[
+          "number: number",
+          "string: string",
+          "boolean: boolean",
+          "array: Array<number>",
+          "object: {}",
+          "union: number | string | boolean",
+          "optional?: number",
+        ].join(", ")} }`
       );
     });
   });
@@ -136,14 +140,21 @@ describe("Schema", () => {
         Schema.Number(),
         Schema.String(),
         Schema.Union([Schema.Number(), Schema.String(), Schema.Boolean()]),
-        Schema.Object({a: Schema.String()}),
-        Schema.Object({a: Schema.Number()}),
-        Schema.Object({a: Schema.Number()}),
-        Schema.Object({a: Schema.Boolean()})
+        Schema.Object({ a: Schema.String() }),
+        Schema.Object({ a: Schema.Number() }),
+        Schema.Object({ a: Schema.Number() }),
+        Schema.Object({ a: Schema.Boolean() }),
       ]);
       expect(schema.type).to.be.eq("union");
-      expect(schema.itemTypes.map(({ type }) => type)).to.be.deep.eq(["number", "string", "boolean", "object", "object", "object"]);
-      expect(schema.definition).to.be.eq(`number | string | boolean | {\n  a: string\n} | {\n  a: number\n} | {\n  a: boolean\n}`);
+      expect(schema.itemTypes.map(({ type }) => type)).to.be.deep.eq([
+        "number",
+        "string",
+        "boolean",
+        "object",
+        "object",
+        "object",
+      ]);
+      expect(schema.definition).to.be.eq(`number | string | boolean | { a: string } | { a: number } | { a: boolean }`);
     });
   });
 });
