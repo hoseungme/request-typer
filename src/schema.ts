@@ -107,7 +107,7 @@ type KeyOfUndefinedProperty<T extends Record<string, any>> = {
   [key in keyof T]: undefined extends T[key] ? key : never;
 }[keyof T];
 
-type UndefinedPropertyToOptional<T extends Record<string, any>> = Omit<T, KeyOfUndefinedProperty<T>> &
+export type UndefinedPropertyToOptional<T extends Record<string, any>> = Omit<T, KeyOfUndefinedProperty<T>> &
   Partial<Pick<T, KeyOfUndefinedProperty<T>>>;
 
 export class Schema {
