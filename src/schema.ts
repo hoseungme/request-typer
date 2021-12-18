@@ -21,9 +21,9 @@ export type StringType = {
   definition: string;
 };
 
-export type EnumType = {
+export type EnumType<T extends string> = {
   type: "enum";
-  values: string[];
+  values: T[];
   options: TypeOptions;
   definition: string;
 };
@@ -61,10 +61,44 @@ export type AllType =
   | NumberType
   | BooleanType
   | StringType
-  | EnumType
+  | EnumType<any>
   | ArrayType<any>
   | ObjectType<any>
   | UnionType<any>;
+
+export type Resolve<T extends AllType> = WithOptions<
+  T extends { type: "number" }
+    ? number
+    : T extends { type: "string" }
+    ? string
+    : T extends { type: "boolean" }
+    ? boolean
+    : T extends { type: "enum" }
+    ? T["values"][number]
+    : T extends { type: "array" }
+    ? Resolve<T["itemType"]>
+    : T extends { type: "object" }
+    ? UndefinedPropertyToOptional<{ [key in keyof T["properties"]]: Resolve<T["properties"][key]> }>
+    : T extends { type: "union" }
+    ? Resolve<T["itemTypes"][number]>
+    : never,
+  T["options"]
+>;
+
+type WithOptions<T extends any, O extends TypeOptions> = O extends { optional: true; nullable: true }
+  ? T | null | undefined
+  : O extends { nullable: true }
+  ? T | null
+  : O extends { optional: true }
+  ? T | undefined
+  : T;
+
+type KeyOfUndefinedProperty<T extends Record<string, any>> = {
+  [key in keyof T]: undefined extends T[key] ? key : never;
+}[keyof T];
+
+type UndefinedPropertyToOptional<T extends Record<string, any>> = Omit<T, KeyOfUndefinedProperty<T>> &
+  Partial<Pick<T, KeyOfUndefinedProperty<T>>>;
 
 export class Schema {
   public static Number(): NumberType {
@@ -79,7 +113,7 @@ export class Schema {
     return { type: "string", options: {}, definition: "string" };
   }
 
-  public static Enum(values: string[]): EnumType {
+  public static Enum<T extends string>(values: T[]): EnumType<T> {
     return { type: "enum", values, options: {}, definition: values.map((value) => `"${value}"`).join(" | ") };
   }
 
