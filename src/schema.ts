@@ -53,6 +53,13 @@ export type ObjectSchema<T extends ObjectProperties> = {
   definition: string;
 };
 
+export type DictSchema<T extends AllSchema> = {
+  type: "dict";
+  valueSchema: T;
+  options: SchemaOptions;
+  definition: string;
+};
+
 export type OptionalSchema<T extends AllSchema> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
 
 export type NullableSchema<T extends AllSchema> = Omit<T, "options"> & { options: T["options"] & { nullable: true } };
@@ -64,7 +71,8 @@ export type AllSchema =
   | EnumSchema<any>
   | ArraySchema<any>
   | ObjectSchema<any>
-  | UnionSchema<any>;
+  | UnionSchema<any>
+  | DictSchema<any>;
 
 export type Resolve<T extends AllSchema> = WithOptions<
   T extends { type: "number" }
@@ -79,6 +87,8 @@ export type Resolve<T extends AllSchema> = WithOptions<
     ? Resolve<T["itemSchema"]>
     : T extends { type: "object" }
     ? UndefinedPropertyToOptional<{ [key in keyof T["properties"]]: Resolve<T["properties"][key]> }>
+    : T extends { type: "dict" }
+    ? { [key: string]: Resolve<T["valueSchema"]> }
     : T extends { type: "union" }
     ? Resolve<T["itemSchemas"][number]>
     : never,
@@ -172,5 +182,9 @@ export class Schema {
       options: {},
       definition: uniquified.map((schema) => schema.definition).join(" | "),
     };
+  }
+
+  public static Dict<T extends AllSchema>(valueSchema: T): DictSchema<T> {
+    return { type: "dict", valueSchema, options: {}, definition: `{ [key: string]: ${valueSchema.definition} }` };
   }
 }

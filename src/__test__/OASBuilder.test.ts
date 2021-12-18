@@ -11,6 +11,7 @@ describe("OASBuilder", () => {
           name: Schema.String(),
           gender: Schema.Nullable(Schema.Enum(["men", "women"])),
           email: Schema.Optional(Schema.String()),
+          fields: Schema.Dict(Schema.String()),
         },
       };
 
@@ -158,8 +159,9 @@ describe("OASBuilder", () => {
                 name: { type: "string" },
                 gender: { type: "string", enum: ["men", "women"], nullable: true },
                 email: { type: "string" },
+                fields: { type: "object", additionalProperties: { type: "string" } },
               },
-              required: ["id", "name", "gender"],
+              required: ["id", "name", "gender", "fields"],
             },
           },
         },

@@ -72,6 +72,16 @@ export class Validator {
               failedResults.map((pair) => `property [${pair[0]}]: ${pair[1].error.description}`).join(", ")
             );
       }
+      case "dict": {
+        const isObject = typeof value === "object" && value !== null && !(value instanceof Array);
+        if (!isObject) {
+          return this.makeResult(false, "should be object");
+        }
+
+        return Object.keys(value).every((key) => this.validate(schema.valueSchema, value[key]).success)
+          ? this.makeResult(true)
+          : this.makeResult(false, `should be ${schema.definition}`);
+      }
     }
   }
 

@@ -5,7 +5,7 @@ import { Schema } from "../schema";
 
 describe("Validator", () => {
   describe("Validator.validate", () => {
-    context("when NumberType is passed", () => {
+    context("when NumberSchema is passed", () => {
       const schema = Schema.Number();
 
       it("should return success result if value is evaluated as number", () => {
@@ -19,7 +19,7 @@ describe("Validator", () => {
       });
     });
 
-    context("when StringType is passed", () => {
+    context("when StringSchema is passed", () => {
       const schema = Schema.String();
 
       it("should return success result if value is evaluated as string", () => {
@@ -33,7 +33,7 @@ describe("Validator", () => {
       });
     });
 
-    context("when BooleanType is passed", () => {
+    context("when BooleanSchema is passed", () => {
       const schema = Schema.Boolean();
 
       it("should return success result if value is evaluated as boolean", () => {
@@ -48,7 +48,7 @@ describe("Validator", () => {
       });
     });
 
-    context("when EnumType is passed", () => {
+    context("when EnumSchema is passed", () => {
       const schema = Schema.Enum(["a", "b", "c"]);
 
       it("should return success result if value is evaluated as enum", () => {
@@ -64,7 +64,7 @@ describe("Validator", () => {
       });
     });
 
-    context("when ArrayType is passed", () => {
+    context("when ArraySchema is passed", () => {
       const schema = Schema.Array(Schema.Number());
 
       it("should return success result if value is evaluated as array", () => {
@@ -78,7 +78,7 @@ describe("Validator", () => {
       });
     });
 
-    context("when UnionType is passed", () => {
+    context("when UnionSchema is passed", () => {
       const schema = Schema.Union([Schema.Number(), Schema.String()]);
 
       it("should return success result if value is evaluated as union", () => {
@@ -93,7 +93,7 @@ describe("Validator", () => {
       });
     });
 
-    context("when ObjectType is passed", () => {
+    context("when ObjectSchema is passed", () => {
       const schema = Schema.Object({ number: Schema.Number(), optional: Schema.Optional(Schema.String()) });
 
       it("should return success result if value is evaluated as union", () => {
@@ -113,6 +113,21 @@ describe("Validator", () => {
         expect(result.success === false && result.error.description).to.be.eq(
           "property [number]: should be provided, property [optional]: should be string"
         );
+      });
+    });
+
+    context("when DictSchema is passed", () => {
+      const schema = Schema.Dict(Schema.String());
+
+      it("should return success result if value is evaluated as dict", () => {
+        expect(Validator.validate(schema, { a: "1234", b: "1234" }).success).to.be.true;
+        expect(Validator.validate(schema, {}).success).to.be.true;
+      });
+
+      it("should return failed result if value isn't evaluated as dict", () => {
+        const result = Validator.validate(schema, { a: 1234, b: "1234" });
+        expect(result.success).to.be.false;
+        expect(result.success === false && result.error.description).to.be.eq("should be { [key: string]: string }");
       });
     });
   });
