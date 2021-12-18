@@ -150,6 +150,9 @@ export class OASBuilder {
       case "enum": {
         return { type: "string", enum: schema.values, ...(nullable ? { nullable } : {}) };
       }
+      case "dict": {
+        return { type: "object", additionalProperties: this.createSchema(schema.valueSchema) };
+      }
     }
   }
 

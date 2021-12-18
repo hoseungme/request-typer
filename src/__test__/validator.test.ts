@@ -115,5 +115,20 @@ describe("Validator", () => {
         );
       });
     });
+
+    context("when DictType is passed", () => {
+      const schema = Schema.Dict(Schema.String());
+
+      it("should return success result if value is evaluated as dict", () => {
+        expect(Validator.validate(schema, { a: "1234", b: "1234" }).success).to.be.true;
+        expect(Validator.validate(schema, {}).success).to.be.true;
+      });
+
+      it("should return failed result if value isn't evaluated as dict", () => {
+        const result = Validator.validate(schema, { a: 1234, b: "1234" });
+        expect(result.success).to.be.false;
+        expect(result.success === false && result.error.description).to.be.eq("should be { [key: string]: string }");
+      });
+    });
   });
 });

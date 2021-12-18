@@ -118,6 +118,15 @@ describe("Schema", () => {
     });
   });
 
+  describe("Schema.Dict", () => {
+    it("should return DictSchema object", () => {
+      const schema = Schema.Dict(Schema.String());
+      expect(schema.type).to.be.eq("dict");
+      expect(schema.valueSchema.type).to.be.eq("string");
+      expect(schema.definition).to.be.eq("{ [key: string]: string }");
+    });
+  });
+
   describe("Schema.Optional", () => {
     it("should set Schema.optional option to true", () => {
       const schema = Schema.Optional(Schema.Number());
