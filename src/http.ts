@@ -1,4 +1,4 @@
-import { Parameter, Schema } from ".";
+import { ObjectSchema, Parameter, Schema } from ".";
 import { RequestParameter } from "./parameter";
 import { AllSchema, Resolve } from "./schema";
 
@@ -14,17 +14,36 @@ export type HTTPRequest<M extends Method, P extends Parameters, R extends Respon
   response: R;
 };
 
-export type ResolveQueryParameters<T extends Parameters> = {
-  [key in keyof T]: T[key] extends { type: "query" } ? Resolve<T[key]["schema"]> : never;
+type ResolveParameters<T extends Parameters> = {
+  [key in keyof T]: Resolve<T[key]["schema"]>;
 };
 
-export type ResolvePathParameters<T extends Parameters> = {
-  [key in keyof T]: T[key] extends { type: "path" } ? Resolve<T[key]["schema"]> : never;
-};
+export type ResolveQueryParameters<T extends Parameters> = ResolveParameters<
+  Pick<
+    T,
+    {
+      [key in keyof T]: T[key] extends { type: "query" } ? key : never;
+    }[keyof T]
+  >
+>;
 
-export type ResolveRequestBody<T extends Parameters> = {
-  [key in keyof T]: T[key] extends { type: "body" } ? Resolve<T[key]["schema"]> : never;
-};
+export type ResolvePathParameters<T extends Parameters> = ResolveParameters<
+  Pick<
+    T,
+    {
+      [key in keyof T]: T[key] extends { type: "path" } ? key : never;
+    }[keyof T]
+  >
+>;
+
+export type ResolveRequestBody<T extends Parameters> = ResolveParameters<
+  Pick<
+    T,
+    {
+      [key in keyof T]: T[key] extends { type: "body" } ? key : never;
+    }[keyof T]
+  >
+>;
 
 export class HTTP {
   public static GET<P extends Parameters, R extends ResponseBody>(
