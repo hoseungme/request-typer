@@ -124,7 +124,7 @@ type PathParameters = ResolvePathParameters<typeof request.parameters>;
 type RequestBody = ResolveRequestBody<typeof request.parameters>;
 
 // { success: boolean }
-type ResponseBody = Resolve<ObjectSchema<typeof request.response>>
+type ResponseBody = Resolve<ObjectSchema<typeof request.response>>;
 ```
 
 ## OASBuilder
