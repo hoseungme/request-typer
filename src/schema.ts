@@ -87,6 +87,8 @@ export type Resolve<T extends AllSchema> = WithOptions<
     ? Resolve<T["itemSchema"]>
     : T extends { type: "object" }
     ? UndefinedPropertyToOptional<{ [key in keyof T["properties"]]: Resolve<T["properties"][key]> }>
+    : T extends { type: "dict" }
+    ? { [key: string]: Resolve<T["valueSchema"]> }
     : T extends { type: "union" }
     ? Resolve<T["itemSchemas"][number]>
     : never,
