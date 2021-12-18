@@ -84,7 +84,7 @@ export type Resolve<T extends AllSchema> = WithOptions<
     : T extends { type: "enum" }
     ? T["values"][number]
     : T extends { type: "array" }
-    ? Resolve<T["itemSchema"]>
+    ? Resolve<T["itemSchema"]>[]
     : T extends { type: "object" }
     ? UndefinedPropertyToOptional<{ [key in keyof T["properties"]]: Resolve<T["properties"][key]> }>
     : T extends { type: "dict" }
