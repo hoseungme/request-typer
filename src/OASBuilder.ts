@@ -39,7 +39,7 @@ export class OASBuilder {
   private createComponents(): OpenAPIV3.ComponentsObject {
     const schemas: NonNullable<OpenAPIV3.ComponentsObject["schemas"]> = {};
     this.responseSchemaKeyValuePairs.forEach(([key, value]) => {
-      schemas[key] = this.createSchema({ type: "object", properties: value, options: {}, definition: "" });
+      schemas[key] = this.createSchema(value);
     });
     return { schemas };
   }
@@ -95,17 +95,13 @@ export class OASBuilder {
           content: {
             "application/json": {
               schema: (() => {
+                console.log(requestSchema)
                 const schemaName = this.getResponseBodySchemaName(requestSchema.response);
                 return schemaName
                   ? {
                       $ref: `#/components/schemas/${schemaName}`,
                     }
-                  : this.createSchema({
-                      type: "object",
-                      properties: requestSchema.response,
-                      options: {},
-                      definition: "",
-                    });
+                  : this.createSchema(requestSchema.response);
               })(),
             },
           },
@@ -115,6 +111,7 @@ export class OASBuilder {
   }
 
   private createSchema(schema: AllSchema): OpenAPIV3.SchemaObject {
+    console.log(schema)
     const nullable = schema.options.nullable;
     switch (schema.type) {
       case "number": {

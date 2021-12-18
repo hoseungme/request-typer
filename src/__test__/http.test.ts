@@ -13,17 +13,17 @@ describe("HTTP", () => {
         {
           id: Parameter.Path(Schema.String()),
         },
-        {
+        Schema.Object({
           user: Schema.Object({ id: Schema.String() }),
-        }
+        })
       );
       expect(request.method).to.be.eq("get");
       expect(request.operationId).to.be.eq("getUser");
       expect(request.path).to.be.eq("/users/:id");
       expect(request.parameters.id.type).to.be.eq("path");
       expect(request.parameters.id.schema.type).to.be.eq("string");
-      expect(request.response.user.type).to.be.eq("object");
-      expect(request.response.user.properties.id.type).to.be.eq("string");
+      expect(request.response.properties.user.type).to.be.eq("object");
+      expect(request.response.properties.user.properties.id.type).to.be.eq("string");
     });
   });
 
@@ -35,17 +35,17 @@ describe("HTTP", () => {
         {
           id: Parameter.Body(Schema.String()),
         },
-        {
+        Schema.Object({
           user: Schema.Object({ id: Schema.String() }),
-        }
+        })
       );
       expect(request.method).to.be.eq("post");
       expect(request.operationId).to.be.eq("createUser");
       expect(request.path).to.be.eq("/users");
       expect(request.parameters.id.type).to.be.eq("body");
       expect(request.parameters.id.schema.type).to.be.eq("string");
-      expect(request.response.user.type).to.be.eq("object");
-      expect(request.response.user.properties.id.type).to.be.eq("string");
+      expect(request.response.properties.user.type).to.be.eq("object");
+      expect(request.response.properties.user.properties.id.type).to.be.eq("string");
     });
   });
 
@@ -57,17 +57,17 @@ describe("HTTP", () => {
         {
           id: Parameter.Path(Schema.String()),
         },
-        {
+        Schema.Object({
           user: Schema.Object({ id: Schema.String() }),
-        }
+        })
       );
       expect(request.method).to.be.eq("put");
       expect(request.operationId).to.be.eq("updateUser");
       expect(request.path).to.be.eq("/users/:id");
       expect(request.parameters.id.type).to.be.eq("path");
       expect(request.parameters.id.schema.type).to.be.eq("string");
-      expect(request.response.user.type).to.be.eq("object");
-      expect(request.response.user.properties.id.type).to.be.eq("string");
+      expect(request.response.properties.user.type).to.be.eq("object");
+      expect(request.response.properties.user.properties.id.type).to.be.eq("string");
     });
   });
 
@@ -79,17 +79,17 @@ describe("HTTP", () => {
         {
           id: Parameter.Path(Schema.String()),
         },
-        {
+        Schema.Object({
           user: Schema.Object({ id: Schema.String() }),
-        }
+        })
       );
       expect(request.method).to.be.eq("patch");
       expect(request.operationId).to.be.eq("updateUser");
       expect(request.path).to.be.eq("/users/:id");
       expect(request.parameters.id.type).to.be.eq("path");
       expect(request.parameters.id.schema.type).to.be.eq("string");
-      expect(request.response.user.type).to.be.eq("object");
-      expect(request.response.user.properties.id.type).to.be.eq("string");
+      expect(request.response.properties.user.type).to.be.eq("object");
+      expect(request.response.properties.user.properties.id.type).to.be.eq("string");
     });
   });
 
@@ -101,16 +101,16 @@ describe("HTTP", () => {
         {
           id: Parameter.Path(Schema.String()),
         },
-        {
+        Schema.Object({
           success: Schema.Boolean(),
-        }
+        })
       );
       expect(request.method).to.be.eq("delete");
       expect(request.operationId).to.be.eq("deleteUser");
       expect(request.path).to.be.eq("/users/:id");
       expect(request.parameters.id.type).to.be.eq("path");
       expect(request.parameters.id.schema.type).to.be.eq("string");
-      expect(request.response.success.type).to.be.eq("boolean");
+      expect(request.response.properties.success.type).to.be.eq("boolean");
     });
   });
 });

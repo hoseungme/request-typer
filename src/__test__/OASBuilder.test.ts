@@ -6,13 +6,13 @@ describe("OASBuilder", () => {
   describe("OASBuilder.build", () => {
     it("should create correct OpenAPI Specification", () => {
       const Responses = {
-        User: {
+        User: Schema.Object({
           id: Schema.String(),
           name: Schema.String(),
           gender: Schema.Nullable(Schema.Enum(["men", "women"])),
           email: Schema.Optional(Schema.String()),
           fields: Schema.Dict(Schema.String()),
-        },
+        }),
       };
 
       const httpRequestSchemas = [

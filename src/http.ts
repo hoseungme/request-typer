@@ -1,9 +1,9 @@
 import { RequestParameter } from "./parameter";
-import { AllSchema, UndefinedPropertyToOptional, Resolve } from "./schema";
+import { ObjectSchema, ObjectProperties, UndefinedPropertyToOptional, Resolve } from "./schema";
 
 export type Method = "get" | "post" | "put" | "patch" | "delete";
 export type Parameters = { [key in string]: RequestParameter };
-export type ResponseBody = { [key in string]: AllSchema };
+export type ResponseBody = ObjectSchema<ObjectProperties>;
 
 export type HTTPRequest<M extends Method, P extends Parameters, R extends ResponseBody> = {
   method: M;
