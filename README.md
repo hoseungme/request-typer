@@ -16,28 +16,58 @@ No dependencies. Only pure Javascript.
 use ```Schema``` to create type definition.
 
 ```typescript
-/*
-{
-  id: string;
-  name: string;
-  email?: string;
-  createdAt: number;
-}
-*/
 const user = Schema.Object({
   id: Schema.String(),
   name: Schema.String(),
   email: Schema.Optional(Schema.String()),
+  gender: Schema.Nullable(Schema.Enum(["women", "men"])),
   createdAt: Schema.Number(),
 });
+
+const union = Schema.Union([
+  Schema.Number(),
+  Schema.String(),
+  Schema.Union([
+    Schema.Number(),
+    Schema.String(),
+    Schema.Bolean()
+  ]),
+]);
+```
+
+and it supports static type resolution. import ```Resolve```.
+
+```typescript
+const user = Schema.Object({
+  id: Schema.String(),
+  name: Schema.String(),
+  email: Schema.Optional(Schema.String()),
+  gender: Schema.Nullable(Schema.Enum(["women", "men"])),
+  createdAt: Schema.Number(),
+});
+
+/*
+{
+  id: string;
+  name: string;
+  email?: string | undefined;
+  gender: "women" | "men" | null;
+  createdAt: number;
+}
+*/
+type User = Resolve<typeof user>;
 ```
 
 ## Validator
 use ```Validator``` to compare [Schema](#schema) with value.
 
+it returns ```{ success: true }``` if validation succeeded. otherwise, it returns error which includes message.
+
 ```typescript
-Validator.validate(Schema.Number(), 1234); // true
-Validator.validate(Schema.Array(Schema.String()), [1, 2, 3, 4]); // false
+Validator.validate(Schema.Number(), 1234).success; // true
+
+Validator.validate(Schema.Array(Schema.String()), [1, 2, 3, 4]).success; // false
+Validator.validate(Schema.Array(Schema.String()), [1, 2, 3, 4]).error.description; // "should be Array<string>"
 ```
 
 ## HTTP

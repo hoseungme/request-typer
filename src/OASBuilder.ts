@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
 
-import { AllType } from "./schema";
+import { AllSchema } from "./schema";
 import { HTTPRequest, Method, Parameters, ResponseBody } from "./http";
 
 export class OASBuilder {
@@ -39,7 +39,7 @@ export class OASBuilder {
   private createComponents(): OpenAPIV3.ComponentsObject {
     const schemas: NonNullable<OpenAPIV3.ComponentsObject["schemas"]> = {};
     this.responseSchemaKeyValuePairs.forEach(([key, value]) => {
-      schemas[key] = this.createSchema({ type: "object", properties: value, options: {} });
+      schemas[key] = this.createSchema({ type: "object", properties: value, options: {}, definition: "" });
     });
     return { schemas };
   }
@@ -78,6 +78,7 @@ export class OASBuilder {
                     return result;
                   })(),
                   options: {},
+                  definition: "",
                 }),
               },
             },
@@ -103,6 +104,7 @@ export class OASBuilder {
                       type: "object",
                       properties: requestSchema.response,
                       options: {},
+                      definition: "",
                     });
               })(),
             },
@@ -112,7 +114,7 @@ export class OASBuilder {
     };
   }
 
-  private createSchema(schema: AllType): OpenAPIV3.SchemaObject {
+  private createSchema(schema: AllSchema): OpenAPIV3.SchemaObject {
     const nullable = schema.options.nullable;
     switch (schema.type) {
       case "number": {
@@ -125,7 +127,7 @@ export class OASBuilder {
         return { type: "boolean", ...(nullable ? { nullable } : {}) };
       }
       case "array": {
-        return { type: "array", items: this.createSchema(schema.itemType), ...(nullable ? { nullable } : {}) };
+        return { type: "array", items: this.createSchema(schema.itemSchema), ...(nullable ? { nullable } : {}) };
       }
       case "object": {
         const properties: NonNullable<OpenAPIV3.SchemaObject["properties"]> = {};
@@ -143,7 +145,7 @@ export class OASBuilder {
         };
       }
       case "union": {
-        return { anyOf: schema.itemTypes.map(this.createSchema), ...(nullable ? { nullable } : {}) };
+        return { anyOf: schema.itemSchemas.map(this.createSchema), ...(nullable ? { nullable } : {}) };
       }
       case "enum": {
         return { type: "string", enum: schema.values, ...(nullable ? { nullable } : {}) };
