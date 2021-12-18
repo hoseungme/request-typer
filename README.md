@@ -4,8 +4,6 @@
 
 Make typed request schema and build OpenAPI Specification.
 
-No dependencies. Only pure Javascript.
-
 ## Features
 - [Schema](#schema)
 - [Validator](#validator)
