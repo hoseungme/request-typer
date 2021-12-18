@@ -1,4 +1,4 @@
-import { AllType } from "./schema";
+import { AllSchema } from "./schema";
 
 export class ValidationError {
   constructor(public readonly description: string) {}
@@ -16,7 +16,7 @@ interface FailedResult {
 export type ValidationResult = SuccessResult | FailedResult;
 
 export class Validator {
-  public static validate(schema: AllType, value: any): ValidationResult {
+  public static validate(schema: AllSchema, value: any): ValidationResult {
     if (value === undefined) {
       return !!schema.options.optional ? this.makeResult(true) : this.makeResult(false, "should be provided");
     }
@@ -47,12 +47,12 @@ export class Validator {
         if (!isArray) {
           return this.makeResult(false, "should be array");
         }
-        return value.every((item) => this.validate(schema.itemType, item).success)
+        return value.every((item) => this.validate(schema.itemSchema, item).success)
           ? this.makeResult(true)
           : this.makeResult(false, `should be ${schema.definition}`);
       }
       case "union": {
-        return schema.itemTypes.some((item) => this.validate(item, value).success)
+        return schema.itemSchemas.some((item) => this.validate(item, value).success)
           ? this.makeResult(true)
           : this.makeResult(false, `should be ${schema.definition}`);
       }

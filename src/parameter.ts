@@ -1,16 +1,16 @@
-import { AllType } from "./schema";
+import { AllSchema } from "./schema";
 
-type QueryParameter<T extends AllType> = {
+type QueryParameter<T extends AllSchema> = {
   type: "query";
   schema: T;
 };
 
-type PathParameter<T extends AllType> = {
+type PathParameter<T extends AllSchema> = {
   type: "path";
   schema: T;
 };
 
-type RequestBody<T extends AllType> = {
+type RequestBody<T extends AllSchema> = {
   type: "body";
   schema: T;
 };
@@ -18,15 +18,15 @@ type RequestBody<T extends AllType> = {
 export type RequestParameter = QueryParameter<any> | PathParameter<any> | RequestBody<any>;
 
 export class Parameter {
-  public static Query<T extends AllType>(schema: T): QueryParameter<T> {
+  public static Query<T extends AllSchema>(schema: T): QueryParameter<T> {
     return { type: "query", schema };
   }
 
-  public static Path<T extends AllType>(schema: T): PathParameter<T> {
+  public static Path<T extends AllSchema>(schema: T): PathParameter<T> {
     return { type: "path", schema };
   }
 
-  public static Body<T extends AllType>(schema: T): RequestBody<T> {
+  public static Body<T extends AllSchema>(schema: T): RequestBody<T> {
     return { type: "body", schema };
   }
 }

@@ -1,72 +1,72 @@
-export type TypeOptions = {
+export type SchemaOptions = {
   optional?: boolean;
   nullable?: boolean;
 };
 
-export type NumberType = {
+export type NumberSchema = {
   type: "number";
-  options: TypeOptions;
+  options: SchemaOptions;
   definition: string;
 };
 
-export type BooleanType = {
+export type BooleanSchema = {
   type: "boolean";
-  options: TypeOptions;
+  options: SchemaOptions;
   definition: string;
 };
 
-export type StringType = {
+export type StringSchema = {
   type: "string";
-  options: TypeOptions;
+  options: SchemaOptions;
   definition: string;
 };
 
-export type EnumType<T extends string> = {
+export type EnumSchema<T extends string> = {
   type: "enum";
   values: T[];
-  options: TypeOptions;
+  options: SchemaOptions;
   definition: string;
 };
 
-export type ArrayType<T extends AllType> = {
+export type ArraySchema<T extends AllSchema> = {
   type: "array";
-  itemType: T;
-  options: TypeOptions;
+  itemSchema: T;
+  options: SchemaOptions;
   definition: string;
 };
 
-export type TypeWithoutUnion<T extends AllType> = T extends UnionType<any> ? T["itemTypes"][number] : T;
+export type SchemaWithoutUnion<T extends AllSchema> = T extends UnionSchema<any> ? T["itemSchemas"][number] : T;
 
-export type UnionType<T extends AllType> = {
+export type UnionSchema<T extends AllSchema> = {
   type: "union";
-  itemTypes: TypeWithoutUnion<T>[];
-  options: TypeOptions;
+  itemSchemas: SchemaWithoutUnion<T>[];
+  options: SchemaOptions;
   definition: string;
 };
 
-export type ObjectProperties = { [key in string]: AllType };
+export type ObjectProperties = { [key in string]: AllSchema };
 
-export type ObjectType<T extends ObjectProperties> = {
+export type ObjectSchema<T extends ObjectProperties> = {
   type: "object";
   properties: T;
-  options: TypeOptions;
+  options: SchemaOptions;
   definition: string;
 };
 
-export type OptionalType<T extends AllType> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
+export type OptionalSchema<T extends AllSchema> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
 
-export type NullableType<T extends AllType> = Omit<T, "options"> & { options: T["options"] & { nullable: true } };
+export type NullableSchema<T extends AllSchema> = Omit<T, "options"> & { options: T["options"] & { nullable: true } };
 
-export type AllType =
-  | NumberType
-  | BooleanType
-  | StringType
-  | EnumType<any>
-  | ArrayType<any>
-  | ObjectType<any>
-  | UnionType<any>;
+export type AllSchema =
+  | NumberSchema
+  | BooleanSchema
+  | StringSchema
+  | EnumSchema<any>
+  | ArraySchema<any>
+  | ObjectSchema<any>
+  | UnionSchema<any>;
 
-export type Resolve<T extends AllType> = WithOptions<
+export type Resolve<T extends AllSchema> = WithOptions<
   T extends { type: "number" }
     ? number
     : T extends { type: "string" }
@@ -76,16 +76,16 @@ export type Resolve<T extends AllType> = WithOptions<
     : T extends { type: "enum" }
     ? T["values"][number]
     : T extends { type: "array" }
-    ? Resolve<T["itemType"]>
+    ? Resolve<T["itemSchema"]>
     : T extends { type: "object" }
     ? UndefinedPropertyToOptional<{ [key in keyof T["properties"]]: Resolve<T["properties"][key]> }>
     : T extends { type: "union" }
-    ? Resolve<T["itemTypes"][number]>
+    ? Resolve<T["itemSchemas"][number]>
     : never,
   T["options"]
 >;
 
-type WithOptions<T extends any, O extends TypeOptions> = O extends { optional: true; nullable: true }
+type WithOptions<T extends any, O extends SchemaOptions> = O extends { optional: true; nullable: true }
   ? T | null | undefined
   : O extends { nullable: true }
   ? T | null
@@ -101,27 +101,27 @@ type UndefinedPropertyToOptional<T extends Record<string, any>> = Omit<T, KeyOfU
   Partial<Pick<T, KeyOfUndefinedProperty<T>>>;
 
 export class Schema {
-  public static Number(): NumberType {
+  public static Number(): NumberSchema {
     return { type: "number", options: {}, definition: "number" };
   }
 
-  public static Boolean(): BooleanType {
+  public static Boolean(): BooleanSchema {
     return { type: "boolean", options: {}, definition: "boolean" };
   }
 
-  public static String(): StringType {
+  public static String(): StringSchema {
     return { type: "string", options: {}, definition: "string" };
   }
 
-  public static Enum<T extends string>(values: T[]): EnumType<T> {
+  public static Enum<T extends string>(values: T[]): EnumSchema<T> {
     return { type: "enum", values, options: {}, definition: values.map((value) => `"${value}"`).join(" | ") };
   }
 
-  public static Array<T extends AllType>(itemType: T): ArrayType<T> {
-    return { type: "array", itemType, options: {}, definition: `Array<${itemType.definition}>` };
+  public static Array<T extends AllSchema>(itemSchema: T): ArraySchema<T> {
+    return { type: "array", itemSchema, options: {}, definition: `Array<${itemSchema.definition}>` };
   }
 
-  public static Object<T extends ObjectProperties>(properties: T): ObjectType<T> {
+  public static Object<T extends ObjectProperties>(properties: T): ObjectSchema<T> {
     const pairs = Object.keys(properties).map((key) => {
       return [key, properties[key]] as const;
     });
@@ -140,37 +140,37 @@ export class Schema {
     };
   }
 
-  public static Optional<T extends AllType>(type: T): OptionalType<T> {
-    type.options.optional = true;
-    return type as OptionalType<T>;
+  public static Optional<T extends AllSchema>(schema: T): OptionalSchema<T> {
+    schema.options.optional = true;
+    return schema as OptionalSchema<T>;
   }
 
-  public static Nullable<T extends AllType>(type: T): NullableType<T> {
-    type.options.nullable = true;
-    type.definition = `${type.definition} | null`;
-    return type as NullableType<T>;
+  public static Nullable<T extends AllSchema>(schema: T): NullableSchema<T> {
+    schema.options.nullable = true;
+    schema.definition = `${schema.definition} | null`;
+    return schema as NullableSchema<T>;
   }
 
-  public static Union<T extends AllType>(types: T[]): UnionType<T> {
+  public static Union<T extends AllSchema>(schemas: T[]): UnionSchema<T> {
     const uniquified = (() => {
-      const flattend = types
-        .map((type) => {
-          if (type.type === "union") {
-            return type.itemTypes;
+      const flattend = schemas
+        .map((schema) => {
+          if (schema.type === "union") {
+            return schema.itemSchemas;
           }
-          return type;
+          return schema;
         })
-        .flat() as TypeWithoutUnion<T>[];
-      return Array.from(new Map(flattend.map((type) => [JSON.stringify(type.definition), type]))).map(
-        ([, type]) => type
+        .flat() as SchemaWithoutUnion<T>[];
+      return Array.from(new Map(flattend.map((schema) => [JSON.stringify(schema.definition), schema]))).map(
+        ([, schema]) => schema
       );
     })();
 
     return {
       type: "union",
-      itemTypes: uniquified,
+      itemSchemas: uniquified,
       options: {},
-      definition: uniquified.map((type) => type.definition).join(" | "),
+      definition: uniquified.map((schema) => schema.definition).join(" | "),
     };
   }
 }
