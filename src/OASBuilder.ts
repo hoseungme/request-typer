@@ -95,7 +95,6 @@ export class OASBuilder {
           content: {
             "application/json": {
               schema: (() => {
-                console.log(requestSchema)
                 const schemaName = this.getResponseBodySchemaName(requestSchema.response);
                 return schemaName
                   ? {
@@ -111,7 +110,6 @@ export class OASBuilder {
   }
 
   private createSchema(schema: AllSchema): OpenAPIV3.SchemaObject {
-    console.log(schema)
     const nullable = schema.options.nullable;
     switch (schema.type) {
       case "number": {
