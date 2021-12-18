@@ -1,6 +1,6 @@
 {
   "name": "request-typer",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Make typed request schema and build OpenAPI Specification",
   "files": [
     "dst"
