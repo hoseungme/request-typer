@@ -1,5 +1,6 @@
+import { Parameter, Schema } from ".";
 import { RequestParameter } from "./parameter";
-import { AllSchema } from "./schema";
+import { AllSchema, Resolve } from "./schema";
 
 export type Method = "get" | "post" | "put" | "patch" | "delete";
 export type Parameters = { [key in string]: RequestParameter };
@@ -11,6 +12,18 @@ export type HTTPRequest<M extends Method, P extends Parameters, R extends Respon
   path: string;
   parameters: P;
   response: R;
+};
+
+export type ResolveQueryParameters<T extends Parameters> = {
+  [key in keyof T]: T[key] extends { type: "query" } ? Resolve<T[key]["schema"]> : never;
+};
+
+export type ResolvePathParameters<T extends Parameters> = {
+  [key in keyof T]: T[key] extends { type: "path" } ? Resolve<T[key]["schema"]> : never;
+};
+
+export type ResolveRequestBody<T extends Parameters> = {
+  [key in keyof T]: T[key] extends { type: "body" } ? Resolve<T[key]["schema"]> : never;
 };
 
 export class HTTP {
