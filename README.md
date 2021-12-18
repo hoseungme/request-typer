@@ -99,6 +99,34 @@ HTTP.GET(
 );
 ```
 
+and it supports static type resolution for request parameters and response body.
+```typescript
+const request = HTTP.PUT(
+  "updateUser",
+  "/users/:id",
+  {
+    id: Parameter.Path(Schema.String()),
+    name: Parameter.Body(Schema.String()),
+    email: Parameter.Body(Schema.String()),
+  },
+  {
+    success: Schema.Boolean(),
+  }
+);
+
+// {}
+type QueryParameters = ResolveQueryParameters<typeof request.parameters>;
+
+// { id: string }
+type PathParameters = ResolvePathParameters<typeof request.parameters>;
+
+// { name: string, email: string }
+type RequestBody = ResolveRequestBody<typeof request.parameters>;
+
+// { success: boolean }
+type ResponseBody = Resolve<ObjectSchema<typeof request.response>>
+```
+
 ## OASBuilder
 use ```OASBuilder``` to create OpenAPI Specification from [HTTP request schemas](#http).
 
