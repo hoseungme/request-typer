@@ -1,4 +1,4 @@
-import { AllSchema } from "./schema";
+import { AllSchema } from ".";
 
 type QueryParameter<T extends AllSchema> = {
   type: "query";

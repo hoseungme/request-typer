@@ -1,7 +1,6 @@
 import { expect } from "chai";
 
-import { Validator } from "../validator";
-import { Schema } from "../schema";
+import { Validator, Schema } from "..";
 
 describe("Validator", () => {
   describe("Validator.validate", () => {

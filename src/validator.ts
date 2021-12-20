@@ -1,4 +1,4 @@
-import { AllSchema } from "./schema";
+import { AllSchema } from ".";
 
 export class ValidationError {
   constructor(public readonly description: string) {}

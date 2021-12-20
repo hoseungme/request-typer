@@ -1,7 +1,6 @@
 import { expect } from "chai";
 
-import { Parameter } from "../Parameter";
-import { Schema } from "../schema";
+import { Parameter, Schema } from "..";
 
 describe("Parameter", () => {
   describe("Parameter.Query", () => {

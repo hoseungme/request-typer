@@ -1,7 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
 
-import { AllSchema } from "./schema";
-import { HTTPRequest, Method, Parameters, ResponseBody } from "./http";
+import { AllSchema, HTTPRequest, Method, Parameters, ResponseBody } from ".";
 
 export class OASBuilder {
   private readonly responseSchemaKeyValuePairs: [string, ResponseBody][] = [];

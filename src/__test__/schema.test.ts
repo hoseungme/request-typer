@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { Schema } from "../schema";
+import { Schema } from "..";
 
 describe("Schema", () => {
   describe("Schema.Number", () => {
