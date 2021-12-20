@@ -91,9 +91,9 @@ HTTP.GET(
     id: Parameter.Path(Schema.String()),
   },
   // response json schema
-  {
-    user: Schema.Object({ id: Schema.String() }),
-  }
+  Schema.Object({
+    id: Schema.String(),
+  }),
 );
 ```
 
@@ -107,9 +107,9 @@ const request = HTTP.PUT(
     name: Parameter.Body(Schema.String()),
     email: Parameter.Body(Schema.String()),
   },
-  {
+  Schema.Object({
     success: Schema.Boolean(),
-  }
+  }),
 );
 
 // {}
@@ -130,12 +130,12 @@ use ```OASBuilder``` to create OpenAPI Specification from [HTTP request schemas]
 
 ```typescript
 const Responses = {
-  User: {
+  User: Schema.Object({
     id: Schema.String(),
     name: Schema.String(),
     gender: Schema.Nullable(Schema.Enum(["men", "women"])),
     email: Schema.Optional(Schema.String()),
-  },
+  }),
 };
 
 const httpRequestSchemas = [
@@ -146,7 +146,7 @@ const httpRequestSchemas = [
       id: Parameter.Path(Schema.String()),
       name: Parameter.Body(Schema.String()),
     },
-    Responses.User
+    Responses.User,
   ),
 ];
 
