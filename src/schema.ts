@@ -1,64 +1,58 @@
-export type SchemaOptions = {
+export interface SchemaOptions {
   optional?: boolean;
   nullable?: boolean;
-};
+}
 
-export type NumberSchema = {
+export interface Schema {
+  type: unknown;
+  options: SchemaOptions;
+  definition: string;
+}
+
+export interface NumberSchema extends Schema {
   type: "number";
-  options: SchemaOptions;
-  definition: string;
-};
+}
 
-export type BooleanSchema = {
+export interface BooleanSchema extends Schema {
   type: "boolean";
-  options: SchemaOptions;
-  definition: string;
-};
+}
 
-export type StringSchema = {
+export interface StringSchema extends Schema {
   type: "string";
-  options: SchemaOptions;
-  definition: string;
-};
+}
 
-export type EnumSchema<T extends string> = {
+export type EnumSchemaValue<T extends number | string> = { type: "number" | "string"; value: T };
+
+export interface EnumSchema<T extends EnumSchemaValue<any>> extends Schema {
   type: "enum";
-  values: T[];
-  options: SchemaOptions;
-  definition: string;
-};
+  keys: T[];
+}
 
-export type ArraySchema<T extends AllSchema> = {
+export interface ArraySchema<T extends AllSchema> extends Schema {
   type: "array";
   itemSchema: T;
-  options: SchemaOptions;
-  definition: string;
-};
+}
 
 export type SchemaWithoutUnion<T extends AllSchema> = T extends UnionSchema<any> ? T["itemSchemas"][number] : T;
 
-export type UnionSchema<T extends AllSchema> = {
+export interface UnionSchema<T extends AllSchema> extends Schema {
   type: "union";
   itemSchemas: SchemaWithoutUnion<T>[];
-  options: SchemaOptions;
-  definition: string;
-};
+}
 
-export type ObjectProperties = { [key in string]: AllSchema };
+export interface ObjectProperties {
+  [key: string]: AllSchema;
+}
 
-export type ObjectSchema<T extends ObjectProperties> = {
+export interface ObjectSchema<T extends ObjectProperties> extends Schema {
   type: "object";
   properties: T;
-  options: SchemaOptions;
-  definition: string;
-};
+}
 
-export type DictSchema<T extends AllSchema> = {
+export interface DictSchema<T extends AllSchema> extends Schema {
   type: "dict";
   valueSchema: T;
-  options: SchemaOptions;
-  definition: string;
-};
+}
 
 export type OptionalSchema<T extends AllSchema> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
 
@@ -66,31 +60,31 @@ export type NullableSchema<T extends AllSchema> = Omit<T, "options"> & { options
 
 export type AllSchema =
   | NumberSchema
-  | BooleanSchema
   | StringSchema
-  | EnumSchema<any>
-  | ArraySchema<any>
-  | ObjectSchema<any>
-  | UnionSchema<any>
-  | DictSchema<any>;
+  | BooleanSchema
+  | EnumSchema<EnumSchemaValue<any>>
+  | ArraySchema<AllSchema>
+  | ObjectSchema<ObjectProperties>
+  | UnionSchema<SchemaWithoutUnion<any>>
+  | DictSchema<AllSchema>;
 
-export type Resolve<T extends AllSchema> = WithOptions<
-  T extends { type: "number" }
+export type Resolve<T extends Schema> = WithOptions<
+  T extends NumberSchema
     ? number
-    : T extends { type: "string" }
+    : T extends StringSchema
     ? string
-    : T extends { type: "boolean" }
+    : T extends BooleanSchema
     ? boolean
-    : T extends { type: "enum" }
-    ? T["values"][number]
-    : T extends { type: "array" }
+    : T extends EnumSchema<EnumSchemaValue<any>>
+    ? T["keys"][number]["value"]
+    : T extends ArraySchema<AllSchema>
     ? Resolve<T["itemSchema"]>[]
-    : T extends { type: "object" }
+    : T extends ObjectSchema<ObjectProperties>
     ? UndefinedPropertyToOptional<{ [key in keyof T["properties"]]: Resolve<T["properties"][key]> }>
-    : T extends { type: "dict" }
-    ? { [key: string]: Resolve<T["valueSchema"]> }
-    : T extends { type: "union" }
+    : T extends UnionSchema<AllSchema>
     ? Resolve<T["itemSchemas"][number]>
+    : T extends DictSchema<AllSchema>
+    ? { [key: string]: Resolve<T["valueSchema"]> }
     : never,
   T["options"]
 >;
@@ -123,8 +117,16 @@ export class Schema {
     return { type: "string", options: {}, definition: "string" };
   }
 
-  public static Enum<T extends string>(values: T[]): EnumSchema<T> {
-    return { type: "enum", values, options: {}, definition: values.map((value) => `"${value}"`).join(" | ") };
+  public static Enum<T extends number | string>(values: T[]): EnumSchema<EnumSchemaValue<T>> {
+    return {
+      type: "enum",
+      keys: values.map((value) => ({
+        type: typeof value === "number" ? "number" : "string",
+        value,
+      })),
+      options: {},
+      definition: values.map((value) => `${typeof value === "number" ? value.toString() : `"${value}"`}`).join(" | "),
+    };
   }
 
   public static Array<T extends AllSchema>(itemSchema: T): ArraySchema<T> {
