@@ -21,88 +21,79 @@ export interface StringSchema extends Schema {
   type: "string";
 }
 
-export type EnumSchemaValue<T extends number | string> = { type: "number" | "string"; value: T };
+export type EnumValue = number | string;
 
-export interface EnumSchema<T extends EnumSchemaValue<any>> extends Schema {
+export type EnumSchemaKey<T extends EnumValue> = { type: "number" | "string"; value: T };
+
+export interface EnumSchema<T extends EnumSchemaKey<any>> extends Schema {
   type: "enum";
   keys: T[];
 }
 
-export interface ArraySchema<T extends AllSchema> extends Schema {
+export interface ArraySchema<T extends Schema> extends Schema {
   type: "array";
   itemSchema: T;
 }
 
-export type SchemaWithoutUnion<T extends AllSchema> = T extends UnionSchema<any> ? T["itemSchemas"][number] : T;
+export type SchemaWithoutUnion<T extends Schema> = T extends UnionSchema<infer U> ? U : T;
 
-export interface UnionSchema<T extends AllSchema> extends Schema {
+export interface UnionSchema<T extends Schema> extends Schema {
   type: "union";
   itemSchemas: SchemaWithoutUnion<T>[];
 }
 
-export interface ObjectProperties {
-  [key: string]: AllSchema;
-}
+export type ObjectProperties = Record<string, Schema>;
 
 export interface ObjectSchema<T extends ObjectProperties> extends Schema {
   type: "object";
   properties: T;
 }
 
-export interface DictSchema<T extends AllSchema> extends Schema {
+export interface DictSchema<T extends Schema> extends Schema {
   type: "dict";
   valueSchema: T;
 }
 
-export type OptionalSchema<T extends AllSchema> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
+export type OptionalSchema<T extends Schema> = Omit<T, "options"> & { options: T["options"] & { optional: true } };
 
-export type NullableSchema<T extends AllSchema> = Omit<T, "options"> & { options: T["options"] & { nullable: true } };
+export type NullableSchema<T extends Schema> = Omit<T, "options"> & { options: T["options"] & { nullable: true } };
 
 export type AllSchema =
   | NumberSchema
   | StringSchema
   | BooleanSchema
-  | EnumSchema<EnumSchemaValue<any>>
+  | EnumSchema<EnumSchemaKey<any>>
   | ArraySchema<AllSchema>
-  | ObjectSchema<ObjectProperties>
-  | UnionSchema<SchemaWithoutUnion<any>>
+  | ObjectSchema<Record<string, any>>
+  | UnionSchema<AllSchema>
   | DictSchema<AllSchema>;
 
-export type Resolve<T extends Schema> = WithOptions<
-  T extends NumberSchema
-    ? number
-    : T extends StringSchema
-    ? string
-    : T extends BooleanSchema
-    ? boolean
-    : T extends EnumSchema<EnumSchemaValue<any>>
-    ? T["keys"][number]["value"]
-    : T extends ArraySchema<AllSchema>
-    ? Resolve<T["itemSchema"]>[]
-    : T extends ObjectSchema<ObjectProperties>
-    ? UndefinedPropertyToOptional<{ [key in keyof T["properties"]]: Resolve<T["properties"][key]> }>
-    : T extends UnionSchema<AllSchema>
-    ? Resolve<T["itemSchemas"][number]>
-    : T extends DictSchema<AllSchema>
-    ? { [key: string]: Resolve<T["valueSchema"]> }
-    : never,
-  T["options"]
->;
-
-type WithOptions<T extends any, O extends SchemaOptions> = O extends { optional: true; nullable: true }
-  ? T | null | undefined
-  : O extends { nullable: true }
-  ? T | null
-  : O extends { optional: true }
-  ? T | undefined
-  : T;
-
-type KeyOfUndefinedProperty<T extends Record<string, any>> = {
-  [key in keyof T]: undefined extends T[key] ? key : never;
+export type RequiredPropertyKeys<T extends ObjectProperties> = keyof Omit<T, OptionalPropertyKeys<T>>;
+export type OptionalPropertyKeys<T extends ObjectProperties> = {
+  [key in keyof T]: T[key]["options"]["optional"] extends true ? key : never;
 }[keyof T];
 
-export type UndefinedPropertyToOptional<T extends Record<string, any>> = Omit<T, KeyOfUndefinedProperty<T>> &
-  Partial<Pick<T, KeyOfUndefinedProperty<T>>>;
+export type Resolve<T extends Schema> = T extends OptionalSchema<infer U>
+  ? Resolve<U> | undefined
+  : T extends NullableSchema<infer U>
+  ? Resolve<U> | null
+  : T extends NumberSchema
+  ? number
+  : T extends StringSchema
+  ? string
+  : T extends BooleanSchema
+  ? boolean
+  : T extends EnumSchema<EnumSchemaKey<infer U>>
+  ? U
+  : T extends ArraySchema<infer U>
+  ? Resolve<U>[]
+  : T extends ObjectSchema<infer U>
+  ? { [key in RequiredPropertyKeys<U>]: Resolve<U[key]> } & { [key in OptionalPropertyKeys<U>]?: Resolve<U[key]> }
+  : T extends UnionSchema<infer U>
+  ? Resolve<U>
+  : T extends DictSchema<infer U>
+  ? { [key: string]: Resolve<U> }
+  : never;
 
 export class Schema {
   public static Number(): NumberSchema {
@@ -117,7 +108,7 @@ export class Schema {
     return { type: "string", options: {}, definition: "string" };
   }
 
-  public static Enum<T extends number | string>(values: T[]): EnumSchema<EnumSchemaValue<T>> {
+  public static Enum<T extends EnumValue>(values: T[]): EnumSchema<EnumSchemaKey<T>> {
     return {
       type: "enum",
       keys: values.map((value) => ({

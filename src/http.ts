@@ -1,5 +1,4 @@
-import { RequestParameter } from "./parameter";
-import { ObjectSchema, ObjectProperties, UndefinedPropertyToOptional, Resolve } from "./schema";
+import { RequestParameter, ObjectSchema, ObjectProperties, Resolve } from ".";
 
 export type Method = "get" | "post" | "put" | "patch" | "delete";
 export type Parameters = { [key in string]: RequestParameter };
@@ -13,9 +12,11 @@ export type HTTPRequest<M extends Method, P extends Parameters, R extends Respon
   response: R;
 };
 
-type ResolveParameters<T extends Parameters> = UndefinedPropertyToOptional<{
-  [key in keyof T]: Resolve<T[key]["schema"]>;
-}>;
+type ResolveParameters<T extends Parameters> = Resolve<
+  ObjectSchema<{
+    [key in keyof T]: T[key]["schema"];
+  }>
+>;
 
 export type ResolveQueryParameters<T extends Parameters> = ResolveParameters<
   Pick<
