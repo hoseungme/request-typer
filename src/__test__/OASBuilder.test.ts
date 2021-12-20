@@ -157,7 +157,7 @@ describe("OASBuilder", () => {
               properties: {
                 id: { type: "string" },
                 name: { type: "string" },
-                gender: { type: "string", enum: ["men", "women"], nullable: true },
+                gender: { anyOf: [{ type: "string", enum: ["men", "women"] }], nullable: true },
                 email: { type: "string" },
                 fields: { type: "object", additionalProperties: { type: "string" } },
               },

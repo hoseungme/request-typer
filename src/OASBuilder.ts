@@ -143,7 +143,15 @@ export class OASBuilder {
         return { anyOf: schema.itemSchemas.map(this.createSchema), ...(nullable ? { nullable } : {}) };
       }
       case "enum": {
-        return { type: "string", enum: schema.keys.map((key) => key.value), ...(nullable ? { nullable } : {}) };
+        return {
+          anyOf: (
+            [
+              { type: "number", enum: schema.keys.filter((key) => key.type === "number").map((key) => key.value) },
+              { type: "string", enum: schema.keys.filter((key) => key.type === "string").map((key) => key.value) },
+            ] as const
+          ).filter((item) => item.enum.length > 0),
+          ...(nullable ? { nullable } : {}),
+        };
       }
       case "dict": {
         return { type: "object", additionalProperties: this.createSchema(schema.valueSchema) };
