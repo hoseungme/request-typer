@@ -38,7 +38,7 @@ export class Validator {
           : this.makeResult(false, `should be ${schema.definition}`);
       }
       case "enum": {
-        return schema.values.some((v) => v === value)
+        return schema.keys.some((key) => key.value === value)
           ? this.makeResult(true)
           : this.makeResult(false, `should be one of ${schema.definition}`);
       }

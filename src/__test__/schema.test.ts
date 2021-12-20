@@ -26,10 +26,15 @@ describe("Schema", () => {
 
   describe("Schema.Enum", () => {
     it("should return EnumSchema object", () => {
-      const schema = Schema.Enum(["a", "b", "c"]);
+      const schema = Schema.Enum([1, 2, "a", "b"]);
       expect(schema.type).to.be.eq("enum");
-      expect(schema.values).to.be.deep.eq(["a", "b", "c"]);
-      expect(schema.definition).to.be.eq(`"a" | "b" | "c"`);
+      expect(schema.keys).to.be.deep.eq([
+        { type: "number", value: 1 },
+        { type: "number", value: 2 },
+        { type: "string", value: "a" },
+        { type: "string", value: "b" },
+      ]);
+      expect(schema.definition).to.be.eq(`1 | 2 | "a" | "b"`);
     });
   });
 

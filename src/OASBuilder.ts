@@ -143,7 +143,7 @@ export class OASBuilder {
         return { anyOf: schema.itemSchemas.map(this.createSchema), ...(nullable ? { nullable } : {}) };
       }
       case "enum": {
-        return { type: "string", enum: schema.values, ...(nullable ? { nullable } : {}) };
+        return { type: "string", enum: schema.keys.map((key) => key.value), ...(nullable ? { nullable } : {}) };
       }
       case "dict": {
         return { type: "object", additionalProperties: this.createSchema(schema.valueSchema) };
