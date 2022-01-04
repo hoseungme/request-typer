@@ -1,13 +1,13 @@
-import { RequestParameter, PathParameter, ObjectSchema, ObjectProperties, Resolve } from ".";
+import { RequestParameter, PathParameter, ObjectSchema, ObjectProperties, Resolve, AllSchema } from ".";
 
 export type Method = "get" | "post" | "put" | "patch" | "delete";
 export type Parameters = { [key in string]: RequestParameter };
 export type ResponseBody = ObjectSchema<ObjectProperties>;
 
 export type ExtractParametersFromPath<T extends string> = T extends `${any}{${infer ParamName}}/${infer Suffix}`
-  ? { [key in ParamName | keyof ExtractParametersFromPath<Suffix>]: PathParameter<any> }
+  ? { [key in ParamName | keyof ExtractParametersFromPath<Suffix>]: PathParameter<AllSchema> }
   : T extends `${any}{${infer ParamName}}`
-  ? { [key in ParamName]: PathParameter<any> }
+  ? { [key in ParamName]: PathParameter<AllSchema> }
   : {};
 
 export type HTTPRequest<M extends Method, PA extends string, PR extends Parameters, R extends ResponseBody> = {
