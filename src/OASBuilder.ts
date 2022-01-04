@@ -7,7 +7,7 @@ export class OASBuilder {
 
   constructor(
     private readonly info: OpenAPIV3.InfoObject,
-    private readonly httpRequestSchemas: HTTPRequest<Method, Parameters, ResponseBody>[],
+    private readonly httpRequestSchemas: HTTPRequest<Method, any, Parameters, ResponseBody>[],
     responseSchemas: Record<string, ResponseBody> = {}
   ) {
     Object.keys(responseSchemas).forEach((key) => {
@@ -43,7 +43,7 @@ export class OASBuilder {
     return { schemas };
   }
 
-  private createOperation(requestSchema: HTTPRequest<Method, Parameters, ResponseBody>): OpenAPIV3.OperationObject {
+  private createOperation(requestSchema: HTTPRequest<Method, string, Parameters, ResponseBody>): OpenAPIV3.OperationObject {
     const keys = Object.keys(requestSchema.parameters);
     const parameterKeys = keys.filter((key) => requestSchema.parameters[key].type !== "body");
     const requestBodyKeys = keys.filter((key) => requestSchema.parameters[key].type === "body");
