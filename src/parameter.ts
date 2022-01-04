@@ -1,16 +1,16 @@
 import { AllSchema } from ".";
 
-type QueryParameter<T extends AllSchema> = {
+export type QueryParameter<T extends AllSchema> = {
   type: "query";
   schema: T;
 };
 
-type PathParameter<T extends AllSchema> = {
+export type PathParameter<T extends AllSchema> = {
   type: "path";
   schema: T;
 };
 
-type RequestBody<T extends AllSchema> = {
+export type RequestBody<T extends AllSchema> = {
   type: "body";
   schema: T;
 };
