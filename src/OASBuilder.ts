@@ -43,7 +43,9 @@ export class OASBuilder {
     return { schemas };
   }
 
-  private createOperation(requestSchema: HTTPRequest<Method, string, Parameters, ResponseBody>): OpenAPIV3.OperationObject {
+  private createOperation(
+    requestSchema: HTTPRequest<Method, string, Parameters, ResponseBody>
+  ): OpenAPIV3.OperationObject {
     const keys = Object.keys(requestSchema.parameters);
     const parameterKeys = keys.filter((key) => requestSchema.parameters[key].type !== "body");
     const requestBodyKeys = keys.filter((key) => requestSchema.parameters[key].type === "body");
