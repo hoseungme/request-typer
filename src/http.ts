@@ -10,11 +10,16 @@ export type ExtractParametersFromPath<T extends string> = T extends `${any}{${in
   ? { [key in ParamName]: PathParameter<AllSchema> }
   : {};
 
-export type HTTPRequest<M extends Method, PA extends string, PR extends Parameters, R extends ResponseBody> = {
+export type HTTPRequest<
+  M extends Method,
+  PA extends string,
+  PR extends ExtractParametersFromPath<PA> & Parameters,
+  R extends ResponseBody
+> = {
   method: M;
   operationId: string;
   path: PA;
-  parameters: ExtractParametersFromPath<PA> & PR;
+  parameters: PR;
   response: R;
 };
 
@@ -52,48 +57,47 @@ export type ResolveRequestBody<T extends Parameters> = ResolveParameters<
 >;
 
 export class HTTP {
-  public static GET<PA extends string, PR extends Parameters, R extends ResponseBody>(
+  public static GET<PA extends string, PR extends ExtractParametersFromPath<PA> & Parameters, R extends ResponseBody>(
     operationId: string,
     path: PA,
-    parameters: ExtractParametersFromPath<PA> & PR,
+    parameters: PR,
     response: R
   ): HTTPRequest<"get", PA, PR, R> {
     return { method: "get", operationId, path, parameters, response };
   }
 
-  public static POST<PA extends string, PR extends Parameters, R extends ResponseBody>(
+  public static POST<PA extends string, PR extends ExtractParametersFromPath<PA> & Parameters, R extends ResponseBody>(
     operationId: string,
     path: PA,
-    parameters: ExtractParametersFromPath<PA> & PR,
+    parameters: PR,
     response: R
   ): HTTPRequest<"post", PA, PR, R> {
     return { method: "post", operationId, path, parameters, response };
   }
 
-  public static PUT<PA extends string, PR extends Parameters, R extends ResponseBody>(
+  public static PUT<PA extends string, PR extends ExtractParametersFromPath<PA> & Parameters, R extends ResponseBody>(
     operationId: string,
     path: PA,
-    parameters: ExtractParametersFromPath<PA> & PR,
+    parameters: PR,
     response: R
   ): HTTPRequest<"put", PA, PR, R> {
     return { method: "put", operationId, path, parameters, response };
   }
 
-  public static PATCH<PA extends string, PR extends Parameters, R extends ResponseBody>(
+  public static PATCH<PA extends string, PR extends ExtractParametersFromPath<PA> & Parameters, R extends ResponseBody>(
     operationId: string,
     path: PA,
-    parameters: ExtractParametersFromPath<PA> & PR,
+    parameters: PR,
     response: R
   ): HTTPRequest<"patch", PA, PR, R> {
     return { method: "patch", operationId, path, parameters, response };
   }
 
-  public static DELETE<PA extends string, PR extends Parameters, R extends ResponseBody>(
-    operationId: string,
-    path: PA,
-    parameters: ExtractParametersFromPath<PA> & PR,
-    response: R
-  ): HTTPRequest<"delete", PA, PR, R> {
+  public static DELETE<
+    PA extends string,
+    PR extends ExtractParametersFromPath<PA> & Parameters,
+    R extends ResponseBody
+  >(operationId: string, path: PA, parameters: PR, response: R): HTTPRequest<"delete", PA, PR, R> {
     return { method: "delete", operationId, path, parameters, response };
   }
 }
