@@ -2,7 +2,7 @@
 [![npm version](https://badge.fury.io/js/request-typer.svg)](https://badge.fury.io/js/request-typer)
 [![npm download](https://badgen.net/npm/dt/request-typer)](https://badgen.net/npm/dt/request-typer)
 
-Make typed request schema and build OpenAPI Specification.
+Declare a schema of HTTP Request and Response, and then create type vaildator and openAPI Specification object.
 
 ## Features
 - [Schema](#schema)
